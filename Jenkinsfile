@@ -4,7 +4,7 @@ pipeline {
         maven '3.9.1'
     }
     environment {     
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+        DOCKERHUB_CREDENTIALS = credentials('docker-Hub')
     }
     stages {
         stage ('environment test') {
@@ -21,13 +21,13 @@ pipeline {
                 }
             }
         }
-        // stage("Quality Gate") {
-        //     steps {
-        //         timeout(time: 2, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         stage ('docker login') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
@@ -35,14 +35,14 @@ pipeline {
         }
         stage ('building & tagging docker image') {
             steps {
-                sh 'docker build -t srinu7150/webapp:$BUILD_NUMBER .'
-                sh 'docker tag srinu7150/webapp:$BUILD_NUMBER srinu7150/webapp:latest'
+                sh 'docker build -t kishan877478/webapp:$BUILD_NUMBER .'
+                sh 'docker tag kishan877478/webapp:$BUILD_NUMBER kishan877478/webapp:latest'
             }
         }
         stage ('pushing to docker hub') {
             steps {
-                sh 'docker push srinu7150/webapp:$BUILD_NUMBER'
-                sh 'docker push srinu7150/webapp:latest'
+                sh 'docker push kishan877478/webapp:$BUILD_NUMBER'
+                sh 'docker push kishan877478/webapp:latest'
             }
         }
     }
